@@ -34,7 +34,8 @@ public class EmployeePayRollService implements IEmployeePayrollService{
     @Override
     public EmployeePayrollData addEmployeePayRollData(EmployeePayrollDTO employeePayrollDTO) {
         EmployeePayrollData employeePayrollData = new EmployeePayrollData(employeeRepository.findAll().size()+1,
-                employeePayrollDTO);
+                employeePayrollDTO.employeeName, employeePayrollDTO.image, employeePayrollDTO.gender, employeePayrollDTO.department,
+                employeePayrollDTO.salary, employeePayrollDTO.date, employeePayrollDTO.note);
         employeeRepository.save(employeePayrollData);
         return employeePayrollData;
     }
@@ -51,17 +52,15 @@ public class EmployeePayRollService implements IEmployeePayrollService{
 
     @Override
     public EmployeePayrollData updateEmployeePayRollData(int empId, EmployeePayrollDTO employeePayrollDTO) throws EmployeeNotFoundException {
-        List<EmployeePayrollData> employeePayrollDataList = this.getEmployeePayRollData();
-        for (EmployeePayrollData empData : employeePayrollDataList) {
-            if(empData.getEmployeeId() == empId) {
-                empData.setName(employeePayrollDTO.name);
-                empData.setSalary(employeePayrollDTO.salary);
-                employeeRepository.save(empData);
-                return empData;
-            } else {
-                throw new EmployeeNotFoundException("Employee not found with id: " + empId);
-            }
-        }
-        return null;
+        EmployeePayrollData employeePayrollData = this.getEmployeePayRollDataById(empId);
+        employeePayrollData.setEmployeeName(employeePayrollDTO.employeeName);
+        employeePayrollData.setImage(employeePayrollDTO.image);
+        employeePayrollData.setGender(employeePayrollDTO.gender);
+        employeePayrollData.setSalary(employeePayrollDTO.salary);
+        employeePayrollData.setDepartment(employeePayrollDTO.department);
+        employeePayrollData.setDate(employeePayrollDTO.date);
+        employeePayrollData.setNote(employeePayrollDTO.note);
+        employeeRepository.save(employeePayrollData);
+        return employeePayrollData;
     }
 }
